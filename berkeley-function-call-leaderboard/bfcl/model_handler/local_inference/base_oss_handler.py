@@ -189,58 +189,61 @@ class OSSHandler(BaseHandler, EnforceOverrides):
             stdout_thread.start()
             stderr_thread.start()
 
+        # try:
+        #     # Wait for the server to be ready
+        #     server_ready = False
+        #     while not server_ready:
+        #         # Check if the process has terminated unexpectedly
+        #         if not skip_server_setup and process.poll() is not None:
+        #             # Output the captured logs
+        #             stdout, stderr = process.communicate()
+        #             print(stdout)
+        #             print(stderr)
+        #             raise Exception(
+        #                 f"Subprocess terminated unexpectedly with code {process.returncode}"
+        #             )
+        #         try:
+        #             # Make a simple request to check if the server is up
+        #             response = requests.get(f"{self.base_url}/models")
+        #             if response.status_code == 200:
+        #                 server_ready = True
+        #                 print("server is ready!")
+        #         except requests.exceptions.ConnectionError:
+        #             # If the connection is not ready, wait and try again
+        #             time.sleep(1)
+
+        #     if not skip_server_setup:
+        #         # Signal threads to stop reading output
+        #         stop_event.set()
+
+        #     # Once the server is ready, make the completion requests
+        #     futures = []
+        #     with ThreadPoolExecutor(max_workers=100) as executor:
+        #         with tqdm(
+        #             total=len(test_entries),
+        #             desc=f"Generating results for {self.model_name}",
+        #         ) as pbar:
+
+        #             for test_case in test_entries:
+        #                 future = executor.submit(
+        #                     self._multi_threaded_inference,
+        #                     test_case,
+        #                     include_input_log,
+        #                     exclude_state_log,
+        #                 )
+        #                 futures.append(future)
+
+        #             for future in futures:
+        #                 # This will wait for the task to complete, so that we are always writing in order
+        #                 result = future.result()
+        #                 self.write(result, result_dir, update_mode=update_mode)
+        #                 pbar.update()
+
+        # except Exception as e:
+        #     raise e
+
         try:
-            # Wait for the server to be ready
-            server_ready = False
-            while not server_ready:
-                # Check if the process has terminated unexpectedly
-                if not skip_server_setup and process.poll() is not None:
-                    # Output the captured logs
-                    stdout, stderr = process.communicate()
-                    print(stdout)
-                    print(stderr)
-                    raise Exception(
-                        f"Subprocess terminated unexpectedly with code {process.returncode}"
-                    )
-                try:
-                    # Make a simple request to check if the server is up
-                    response = requests.get(f"{self.base_url}/models")
-                    if response.status_code == 200:
-                        server_ready = True
-                        print("server is ready!")
-                except requests.exceptions.ConnectionError:
-                    # If the connection is not ready, wait and try again
-                    time.sleep(1)
-
-            if not skip_server_setup:
-                # Signal threads to stop reading output
-                stop_event.set()
-
-            # Once the server is ready, make the completion requests
-            futures = []
-            with ThreadPoolExecutor(max_workers=100) as executor:
-                with tqdm(
-                    total=len(test_entries),
-                    desc=f"Generating results for {self.model_name}",
-                ) as pbar:
-
-                    for test_case in test_entries:
-                        future = executor.submit(
-                            self._multi_threaded_inference,
-                            test_case,
-                            include_input_log,
-                            exclude_state_log,
-                        )
-                        futures.append(future)
-
-                    for future in futures:
-                        # This will wait for the task to complete, so that we are always writing in order
-                        result = future.result()
-                        self.write(result, result_dir, update_mode=update_mode)
-                        pbar.update()
-
-        except Exception as e:
-            raise e
+            print("Waiting for server to be ready...")
 
         finally:
             if not skip_server_setup:
