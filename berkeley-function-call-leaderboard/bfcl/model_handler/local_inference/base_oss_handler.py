@@ -191,30 +191,32 @@ class OSSHandler(BaseHandler, EnforceOverrides):
 
         try:
             # Wait for the server to be ready
-            server_ready = False
-            while not server_ready:
-                # Check if the process has terminated unexpectedly
-                if not skip_server_setup and process.poll() is not None:
-                    # Output the captured logs
-                    stdout, stderr = process.communicate()
-                    print(stdout)
-                    print(stderr)
-                    raise Exception(
-                        f"Subprocess terminated unexpectedly with code {process.returncode}"
-                    )
-                try:
-                    # Make a simple request to check if the server is up
-                    response = requests.get(f"{self.base_url}/models")
-                    if response.status_code == 200:
-                        server_ready = True
-                        print("server is ready!")
-                except requests.exceptions.ConnectionError:
-                    # If the connection is not ready, wait and try again
-                    time.sleep(1)
+            # server_ready = False
+            # while not server_ready:
+            #     # Check if the process has terminated unexpectedly
+            #     if not skip_server_setup and process.poll() is not None:
+            #         # Output the captured logs
+            #         stdout, stderr = process.communicate()
+            #         print(stdout)
+            #         print(stderr)
+            #         raise Exception(
+            #             f"Subprocess terminated unexpectedly with code {process.returncode}"
+            #         )
+            #     try:
+            #         # Make a simple request to check if the server is up
+            #         response = requests.get(f"{self.base_url}/models")
+            #         if response.status_code == 200:
+            #             server_ready = True
+            #             print("server is ready!")
+            #     except requests.exceptions.ConnectionError:
+            #         # If the connection is not ready, wait and try again
+            #         time.sleep(1)
 
-            if not skip_server_setup:
-                # Signal threads to stop reading output
-                stop_event.set()
+            # if not skip_server_setup:
+            #     # Signal threads to stop reading output
+            #     stop_event.set()
+
+            print("Once the server is ready, make the completion requests")
 
             # Once the server is ready, make the completion requests
             futures = []
