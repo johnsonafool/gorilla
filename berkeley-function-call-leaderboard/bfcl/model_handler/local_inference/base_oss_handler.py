@@ -334,9 +334,7 @@ class OSSHandler(BaseHandler, EnforceOverrides):
 
         extra_body={"chat_template_kwargs": {"enable_thinking": False}}
         self.model_path_or_id = "qwen3"
-        print(f"VLLM server model id: {self.model_path_or_id}")
-        print(f"VLLM server URL: {self.base_url}")
-        exit(0)
+
         if hasattr(self, "stop_token_ids"):
             extra_body["stop_token_ids"] = self.stop_token_ids
         if hasattr(self, "skip_special_tokens"):
