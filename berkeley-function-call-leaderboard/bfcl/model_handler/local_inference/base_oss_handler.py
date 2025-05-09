@@ -332,7 +332,8 @@ class OSSHandler(BaseHandler, EnforceOverrides):
                 self.max_context_length - input_token_count - 2,
             )
 
-        extra_body = {}
+        extra_body={"chat_template_kwargs": {"enable_thinking": False}}
+        self.model_path_or_id = "qwen3"
         if hasattr(self, "stop_token_ids"):
             extra_body["stop_token_ids"] = self.stop_token_ids
         if hasattr(self, "skip_special_tokens"):
